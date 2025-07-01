@@ -9,16 +9,19 @@ import messageRoutes from './routes/messageRoutes.js';
 dotenv.config();
 const app = express();
 
-// 🚫 Rate limiter to prevent spam
-const limiter = rateLimit({
-  windowMs: 15 * 1000, // 15 seconds
-  max: 5,
-  message: 'Too many requests. Please slow down.',
-});
+app.set('trust proxy', 1);
 
 app.use(cors());
-app.use(limiter);
-app.use(express.json());
+app.use(express.json());  // <-- moved here, before limiter
+
+// 🚫 Rate limiter to prevent spam
+// const limiter = rateLimit({
+//   windowMs: 15 * 1000, // 15 seconds
+//   max: 5,
+//   message: 'Too many requests. Please slow down.',
+// });
+
+// app.use(limiter);  // <-- temporarily disabled for debugging
 
 app.use('/api/messages', messageRoutes);
 
